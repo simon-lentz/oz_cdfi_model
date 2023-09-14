@@ -22,14 +22,14 @@ func (node *OppZone) OppZoneData() map[string]any {
 func GetOppZones(filepath string) ([]OppZone, error) {
 	f, err := os.Open(filepath)
 	if err != nil {
-		return nil, fmt.Errorf("os.Open(%q) err = %v", filepath, err)
+		return nil, fmt.Errorf("os.Open(%+v) err = %+v\n", filepath, err)
 	}
 	defer f.Close()
 
 	r := csv.NewReader(f)
 	records, err := r.ReadAll()
 	if err != nil {
-		return nil, fmt.Errorf("(*csv.Reader).ReadAll(file) err = %v", err)
+		return nil, fmt.Errorf("(*csv.Reader).ReadAll(file) err = %+v\n", err)
 	}
 	oppZones := []OppZone{}
 	for _, record := range records {

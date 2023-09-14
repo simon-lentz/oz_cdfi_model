@@ -22,14 +22,14 @@ func (node *State) StateData() map[string]any {
 func GetStates(filepath string) ([]State, error) {
 	f, err := os.Open(filepath)
 	if err != nil {
-		return nil, fmt.Errorf("os.Open(%q) err = %v", filepath, err)
+		return nil, fmt.Errorf("os.Open(%+v) err = %+v\n", filepath, err)
 	}
 	defer f.Close()
 
 	r := csv.NewReader(f)
 	records, err := r.ReadAll()
 	if err != nil {
-		return nil, fmt.Errorf("(*csv.Reader).ReadAll(file) err = %v", err)
+		return nil, fmt.Errorf("(*csv.Reader).ReadAll(file) err = %v\n", err)
 	}
 	states := []State{}
 	for _, record := range records {
