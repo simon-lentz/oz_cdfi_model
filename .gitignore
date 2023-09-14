@@ -1,0 +1,4 @@
+# Env variables
+.env
+# Test artifacts
+archive/
