@@ -11,9 +11,15 @@ type State struct {
 	StateFIPS string `csv:"STATE_FIPS"` // Counties match by this field.
 }
 
-func GetStates(filepath string) ([]State, error) {
-	states := []State{}
+func (node *State) StateData() map[string]interface{} {
+	stateData := map[string]interface{}{
+		"STATE_NAME": node.Name,
+		"STATE_FIPS": node.StateFIPS,
+	}
+	return stateData
+}
 
+func GetStates(filepath string) ([]State, error) {
 	f, err := os.Open(filepath)
 	if err != nil {
 		return nil, fmt.Errorf("os.Open(%q) err = %v", filepath, err)
@@ -25,6 +31,7 @@ func GetStates(filepath string) ([]State, error) {
 	if err != nil {
 		return nil, fmt.Errorf("(*csv.Reader).ReadAll(file) err = %v", err)
 	}
+	states := []State{}
 	for _, record := range records {
 		states = append(states, State{
 			Name:      record[1],
