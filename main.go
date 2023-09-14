@@ -46,39 +46,7 @@ func main() {
 
 	session := driver.NewSession(ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 	defer session.Close(ctx)
-	/*
-				states, err := internal.GetStates("./data/state_fips.csv")
-				if err != nil {
-					log.Fatalf("internal.GetStates() err = %+v", err)
-				}
-				for _, state := range states {
-					if err := internal.NewStateNode(state, session, ctx); err != nil {
-						log.Printf("Failed to write %+v to DB, err = %+v", state, err)
-					}
-				}
 
-			counties, err := internal.GetCounties("./data/county_fips.csv")
-			if err != nil {
-				log.Fatalf("internal.GetCounties() err = %+v", err)
-			}
-			for _, county := range counties {
-				if err := internal.NewCountyNode(county, session, ctx); err != nil {
-					log.Printf("Failed to write %+v to DB, err = %+v", county, err)
-				}
-			}
-
-
-		states, err := internal.GetStates("./data/state_fips.csv")
-		if err != nil {
-			log.Fatalf("internal.GetStates() err = %+v", err)
-		}
-		for _, state := range states {
-			nodeData := internal.StateData(state)
-			if err := internal.CreateNode(nodeData, "State", session, ctx); err != nil {
-				log.Printf("Failed to write %+v to DB, err = %+v", state, err)
-			}
-		}
-	*/
 	states, err := internal.GetStates("./data/state_fips.csv")
 	if err != nil {
 		log.Fatalf("internal.GetStates() err = %+v", err)
