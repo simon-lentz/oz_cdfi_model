@@ -12,8 +12,8 @@ type County struct {
 	CountyName string `csv:"COUNTY_NAME"`
 }
 
-func (node *County) CountyData() map[string]interface{} {
-	countyData := map[string]interface{}{
+func (node *County) CountyData() map[string]any {
+	countyData := map[string]any{
 		"COUNTY_NAME": node.CountyName,
 		"COUNTY_FIPS": node.CountyFIPS,
 		"STATE_FIPS":  node.StateFIPS,

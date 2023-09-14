@@ -66,4 +66,10 @@ func main() {
 			log.Printf("Failed to write %+v to DB, err = %+v", county, err)
 		}
 	}
+
+	for _, state := range states {
+		if err := internal.CreateEdges(state.StateFIPS, session, ctx); err != nil {
+			log.Printf("Failed to create edge for %+v, err = %+v", state.StateFIPS, err)
+		}
+	}
 }

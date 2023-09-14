@@ -11,8 +11,8 @@ type State struct {
 	StateFIPS string `csv:"STATE_FIPS"` // Counties match by this field.
 }
 
-func (node *State) StateData() map[string]interface{} {
-	stateData := map[string]interface{}{
+func (node *State) StateData() map[string]any {
+	stateData := map[string]any{
 		"STATE_NAME": node.Name,
 		"STATE_FIPS": node.StateFIPS,
 	}
