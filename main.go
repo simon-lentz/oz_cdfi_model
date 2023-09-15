@@ -7,6 +7,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"github.com/simon-lentz/oz_cdfi_model/internal"
+	graph "github.com/simon-lentz/oz_cdfi_model/internal/graph"
 )
 
 func main() {
@@ -34,50 +35,50 @@ func main() {
 	if err != nil {
 		log.Fatalf("internal.GetStates() err = %+v\n", err)
 	}
-	for _, state := range states {
-		if err := internal.CreateNode(state.StateData(), "State", session, ctx); err != nil {
-			log.Printf("Failed to write %+v to DB, err = %+v\n", state, err)
-		}
-	}
 	counties, err := internal.GetCounties("./data/county_fips.csv")
 	if err != nil {
 		log.Fatalf("internal.GetCounties() err = %+v\n", err)
-	}
-	for _, county := range counties {
-		if err := internal.CreateNode(county.CountyData(), "County", session, ctx); err != nil {
-			log.Printf("Failed to write %+v to DB, err = %+v\n", county, err)
-		}
 	}
 	oppZones, err := internal.GetOppZones("./data/opportunity_zone_fips.csv")
 	if err != nil {
 		log.Fatalf("internal.GetOppZones() err = %+v\n", err)
 	}
+
+	for _, state := range states {
+		if err := graph.CreateNode(state.StateData(), "State", session, ctx); err != nil {
+			log.Printf("Failed to write %+v to DB, err = %+v\n", state, err)
+		}
+	}
+	for _, county := range counties {
+		if err := graph.CreateNode(county.CountyData(), "County", session, ctx); err != nil {
+			log.Printf("Failed to write %+v to DB, err = %+v\n", county, err)
+		}
+	}
 	for _, oppZone := range oppZones {
-		if err := internal.CreateNode(oppZone.OppZoneData(), "Opportunity_Zone", session, ctx); err != nil {
+		if err := graph.CreateNode(oppZone.OppZoneData(), "Opportunity_Zone", session, ctx); err != nil {
 			log.Printf("Failed to write %+v to DB, err = %+v\n", oppZone, err)
 		}
 	}
 
 	// Iterate over each parent node, when a parent node and child node intersect with
 	// respect to their shared identifier they are linked with an edge.
-	countyToState := `
-	MATCH (c:County), (s:State)
-	WHERE c.STATE_FIPS = s.STATE_FIPS
-	CREATE (c)-[:LOCATED_IN]->(s)
-	`
 	for _, state := range states {
-		if err := internal.CreateEdges(countyToState, session, ctx); err != nil {
+		if err := graph.CreateEdges(graph.CountyToStateEdge, session, ctx); err != nil {
 			log.Printf("Failed to create edge for %+v, err = %+v\n", state.StateFIPS, err)
 		}
 	}
-	oppZoneToCounty := `
-	MATCH (oz:Opportunity_Zone), (co:County)
-	WHERE oz.COUNTY_FIPS = co.COUNTY_FIPS
-	CREATE (oz)-[:LOCATED_IN]->(co)
-	`
 	for _, county := range counties {
-		if err := internal.CreateEdges(oppZoneToCounty, session, ctx); err != nil {
+		if err := graph.CreateEdges(graph.OppZoneToCountyEdge, session, ctx); err != nil {
 			log.Printf("Failed to create edge for CountyFIPS %+v, err = %+v\n", county.CountyFIPS, err)
 		}
 	}
 }
+
+/*
+TODO:
+- move the final three blocks of the main func into
+  their own functions
+- run transactions concurrently
+- write tests
+- finish documentation
+*/

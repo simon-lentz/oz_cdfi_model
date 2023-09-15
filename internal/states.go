@@ -16,8 +16,8 @@ type state struct {
 }
 
 // The return type map[string]any is used here to allow for
-// consumption of different node types by the CreateNode
-// function defined in nodes.go.
+// consumption of diverse node types by the CreateNode
+// function defined in the node.go file.
 func (node *state) StateData() map[string]any {
 	stateData := map[string]any{
 		"STATE_NAME": node.Name,
@@ -26,7 +26,10 @@ func (node *state) StateData() map[string]any {
 	return stateData
 }
 
-// The filepath parameter should equal "./data/state_fips.csv"
+// GetStates parses state csv data stored in the data directory
+// located one level above this directory (internal), it then
+// populates a slice of county nodes with said data. The vanilla
+// filepath parameter should be "./data/state_fips.csv"
 func GetStates(filepath string) ([]state, error) {
 	f, err := os.Open(filepath)
 	if err != nil {

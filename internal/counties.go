@@ -25,10 +25,14 @@ func (node *county) CountyData() map[string]any {
 		"COUNTY_FIPS": node.CountyFIPS,
 		"STATE_FIPS":  node.StateFIPS,
 	}
+
 	return countyData
 }
 
-// The filepath parameter should equal "./data/county_fips.csv"
+// GetCounties parses county csv data stored in the data directory
+// located one level above this directory (internal), it then
+// populates a slice of county nodes with said data. The vanilla
+// filepath parameter should be "./data/county_fips.csv"
 func GetCounties(filepath string) ([]county, error) {
 	f, err := os.Open(filepath)
 	if err != nil {

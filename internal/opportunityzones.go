@@ -16,8 +16,8 @@ type oppZone struct {
 }
 
 // The return type map[string]any is used here to allow for
-// consumption of different node types by the CreateNode
-// function defined in nodes.go.
+// consumption of diverse node types by the CreateNode
+// function defined in the nodes.go file.
 func (node *oppZone) OppZoneData() map[string]any {
 	oppZoneData := map[string]any{
 		"COUNTY_FIPS":           node.CountyFIPS,
@@ -26,7 +26,10 @@ func (node *oppZone) OppZoneData() map[string]any {
 	return oppZoneData
 }
 
-// The filepath parameter should equal "./data/opportunity_zone_fips.csv"
+// GetOppZones parses opportunity zone csv data stored in the data
+// directory located one level above this directory (internal),
+// it then populates a slice of county nodes with said data.
+// The vanilla filepath parameter should be "./data/opportunity_zone_fips.csv"
 func GetOppZones(filepath string) ([]oppZone, error) {
 	f, err := os.Open(filepath)
 	if err != nil {
