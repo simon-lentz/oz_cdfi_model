@@ -6,13 +6,20 @@ import (
 	"os"
 )
 
-type County struct {
+// County models US Counties by their FIPS number and name.
+// Child nodes are linked to their county with a LOCATED_IN edge
+// that is created when the child's county FIPS field matches the
+// parent's county FIPS ID.
+type county struct {
 	StateFIPS  string `csv:"STATE_FIPS"`
-	CountyFIPS string `csv:"COUNTY_FIPS"`
+	CountyFIPS string `csv:"COUNTY_FIPS"` // Primary Key.
 	CountyName string `csv:"COUNTY_NAME"`
 }
 
-func (node *County) CountyData() map[string]any {
+// The return type map[string]any is used here to allow for
+// consumption of different node types by the CreateNode
+// function defined in nodes.go.
+func (node *county) CountyData() map[string]any {
 	countyData := map[string]any{
 		"COUNTY_NAME": node.CountyName,
 		"COUNTY_FIPS": node.CountyFIPS,
@@ -21,7 +28,8 @@ func (node *County) CountyData() map[string]any {
 	return countyData
 }
 
-func GetCounties(filepath string) ([]County, error) {
+// The filepath parameter should equal "./data/county_fips.csv"
+func GetCounties(filepath string) ([]county, error) {
 	f, err := os.Open(filepath)
 	if err != nil {
 		return nil, fmt.Errorf("os.Open(%+v) err = %+v\n", filepath, err)
@@ -33,9 +41,9 @@ func GetCounties(filepath string) ([]County, error) {
 	if err != nil {
 		return nil, fmt.Errorf("(*csv.Reader).ReadAll(file) err = %+v\n", err)
 	}
-	counties := []County{}
+	counties := []county{}
 	for _, record := range records {
-		counties = append(counties, County{
+		counties = append(counties, county{
 			StateFIPS:  record[0],
 			CountyFIPS: record[1],
 			CountyName: record[2],

@@ -6,12 +6,19 @@ import (
 	"os"
 )
 
-type OppZone struct {
+// OppZone models US Opportunity Zones by their FIPS number (identical
+// to census tract ID). Child nodes are linked to their Opportunity Zone
+// with a LOCATED_IN edge that is created when the child's county FIPS
+// field matches the parent's county FIPS ID.
+type oppZone struct {
 	CountyFIPS  string `csv:"COUNTY_FIPS"`
-	OppZoneFIPS string `csv:"OPPORTUNITY_ZONE_FIPS"` // Counties match by this field.
+	OppZoneFIPS string `csv:"OPPORTUNITY_ZONE_FIPS"` // Primary Key.
 }
 
-func (node *OppZone) OppZoneData() map[string]any {
+// The return type map[string]any is used here to allow for
+// consumption of different node types by the CreateNode
+// function defined in nodes.go.
+func (node *oppZone) OppZoneData() map[string]any {
 	oppZoneData := map[string]any{
 		"COUNTY_FIPS":           node.CountyFIPS,
 		"OPPORTUNITY_ZONE_FIPS": node.OppZoneFIPS,
@@ -19,7 +26,8 @@ func (node *OppZone) OppZoneData() map[string]any {
 	return oppZoneData
 }
 
-func GetOppZones(filepath string) ([]OppZone, error) {
+// The filepath parameter should equal "./data/opportunity_zone_fips.csv"
+func GetOppZones(filepath string) ([]oppZone, error) {
 	f, err := os.Open(filepath)
 	if err != nil {
 		return nil, fmt.Errorf("os.Open(%+v) err = %+v\n", filepath, err)
@@ -31,9 +39,9 @@ func GetOppZones(filepath string) ([]OppZone, error) {
 	if err != nil {
 		return nil, fmt.Errorf("(*csv.Reader).ReadAll(file) err = %+v\n", err)
 	}
-	oppZones := []OppZone{}
+	oppZones := []oppZone{}
 	for _, record := range records {
-		oppZones = append(oppZones, OppZone{
+		oppZones = append(oppZones, oppZone{
 			CountyFIPS:  record[0],
 			OppZoneFIPS: record[1],
 		})

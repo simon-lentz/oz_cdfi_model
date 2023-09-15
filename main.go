@@ -3,37 +3,18 @@ package main
 import (
 	"context"
 	"log"
-	"os"
 
 	"github.com/joho/godotenv"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"github.com/simon-lentz/oz_cdfi_model/internal"
 )
 
-type config struct {
-	Neo4jURI         string
-	Neo4jUserName    string
-	Neo4jPassword    string
-	AuraInstanceID   string
-	AuraInstanceName string
-}
-
-func loadEnvConfig() *config {
-	var cfg config
-	cfg.Neo4jURI = os.Getenv("NEO4J_URI")
-	cfg.Neo4jUserName = os.Getenv("NEO4J_USERNAME")
-	cfg.Neo4jPassword = os.Getenv("NEO4J_PASSWORD")
-	cfg.AuraInstanceID = os.Getenv("AURA_INSTANCEID")
-	cfg.AuraInstanceName = os.Getenv("AURA_INSTANCENAME")
-	return &cfg
-}
-
 func main() {
 	// Load config from .env and use credentials to connect to DB.
 	if err := godotenv.Load(); err != nil {
 		log.Fatalf("godotenv.Load() err = %+v\n", err)
 	}
-	cfg := loadEnvConfig()
+	cfg := internal.LoadEnvConfig()
 	ctx := context.Background()
 	driver, err := neo4j.NewDriverWithContext(
 		cfg.Neo4jURI,
