@@ -3,5 +3,5 @@
 # Test artifacts
 archive/
 # private data and code
-internal/supplementary_data.go
-data/supplementary_data.csv
+internal/supplementary_data*.go
+data/supplementary_data*.csv

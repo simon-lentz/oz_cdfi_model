@@ -73,12 +73,3 @@ func main() {
 		}
 	}
 }
-
-/*
-TODO:
-- move the final three blocks of the main func into
-  their own functions
-- run transactions concurrently
-- write tests
-- finish documentation
-*/
